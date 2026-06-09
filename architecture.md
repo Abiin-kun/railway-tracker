@@ -1,100 +1,100 @@
-# Railway Tracker - System Architecture
+# Railway Tracker - System Architecture (1-Week Sprint)
 
 ## Project Overview
 A comprehensive web-based railway tracking and intelligence platform providing real-time train tracking, predictive delay analysis, and smart travel assistance. Built for modern commuters who demand accuracy, speed, and actionable insights.
 
+**Sprint Goal**: Functional MVP in 7 days with core tracking, delay prediction, and agentic booking.
+
 ---
 
-## Core Features
+## Core Features (MVP - Week 1)
 
 ### 1. Real-Time Train Tracking
 - Live GPS-based train positioning on interactive maps
-- Multi-network support (Indian Railways, Metro systems, International partners)
-- Platform-level accuracy with station arrival/departure predictions
+- Station arrival/departure predictions
 - Offline mode with cached data sync
+- Train schedule lookup
 
 ### 2. AI-Powered Delay Prediction
-- Historical pattern analysis using time-series forecasting
-- Weather integration (rain, fog, extreme temperatures)
-- Signal and track congestion modeling
-- Real-time incident detection (accidents, protests, maintenance)
-- Confidence intervals and prediction accuracy metrics
+- Historical pattern analysis
+- Weather integration
+- Real-time incident detection
+- Confidence intervals
 
 ### 3. Smart Route Optimization
-- Multi-criteria routing (fastest, cheapest, least crowded, scenic)
+- Multi-criteria routing (fastest, least crowded)
 - Platform change minimization
 - Seat availability forecasting
-- Intermodal connections (metro, bus, taxi)
 
-### 4. Unique Differentiators
-- **Crowdsourced Incident Reporting**: Users report delays, cleanliness, and safety issues with photo verification
-- **AR Platform Navigation**: Point phone camera to see platform numbers and coach positions overlaid
-- **Travel Buddy System**: Match with co-passengers for shared cabs or seat swapping
-- **Carbon Footprint Tracker**: Compare train vs flight emissions with tree-equivalent savings
-- **Predictive Maintenance Alerts**: Notify users of upcoming track work affecting their route
-- **Coach Occupancy Heatmap**: Real-time crowd density visualization per coach
-- **Voice-First Commands**: "When is my train?" "Book me a cab when I arrive"
-- **Emergency SOS**: Quick access to helpline, station master, and live location sharing
+### 4. Agentic Ticket Booking System
+- AI-powered booking assistant
+- Natural language search: "Book Delhi to Mumbai tomorrow morning"
+- Auto-fill passenger details from profile
+- Smart seat selection (side lower, near door, etc.)
+- Waitlist monitoring with auto-booking
+- Price comparison across classes
+- Cancellation/refund automation
+- Group booking coordination
 
 ---
 
-## Tech Stack
+## Unique Differentiators (All Planned)
+
+### Phase 1 Features (MVP)
+- Crowdsourced incident reporting
+- Coach occupancy heatmap
+- Voice-first commands
+
+### Phase 2 Features (Post-Launch)
+- AR Platform Navigation
+- Travel Buddy System
+- Carbon Footprint Tracker
+- Predictive Maintenance Alerts
+- Emergency SOS
+
+---
+
+## Tech Stack (Simplified for 1-Week Build)
 
 ### Frontend
 - **Framework**: Next.js 14 (App Router) with React Server Components
-- **Styling**: Tailwind CSS + shadcn/ui components
-- **Maps**: Mapbox GL JS (custom railway layer) + Leaflet fallback
-- **State**: Zustand + React Query for server state
-- **Real-time**: Socket.io client + WebRTC for peer features
-- **AR**: AR.js / 8th Wall for platform navigation
-- **PWA**: Workbox for offline caching and push notifications
+- **Styling**: Tailwind CSS + shadcn/ui
+- **Maps**: Mapbox GL JS (primary) + Leaflet fallback
+- **State**: Zustand + React Query
+- **Real-time**: Socket.io client
+- **PWA**: Minimal Workbox setup
 
 ### Backend
-- **Runtime**: Node.js with Fastify (high performance, low overhead)
-- **API**: tRPC for end-to-end type safety
-- **Real-time**: Socket.io server + Redis pub/sub
-- **Queue**: BullMQ for background jobs (predictions, notifications)
-- **Cache**: Redis (hot data: train positions, predictions)
-- **Search**: Meilisearch for station/train name search
+- **Runtime**: Node.js with Fastify
+- **API**: tRPC for type safety
+- **Real-time**: Socket.io server
+- **Cache**: Redis (hot data)
+- **Queue**: BullMQ (background jobs)
 
 ### Data & ML
-- **Database**: PostgreSQL (primary) + TimescaleDB (time-series for tracking)
-- **ORM**: Prisma with multi-schema support
-- **ML Pipeline**: Python (scikit-learn, Prophet, XGBoost) via FastAPI microservice
-- **Feature Store**: Feast for ML features
-- **Data Lake**: S3-compatible storage for raw historical data
+- **Database**: PostgreSQL + TimescaleDB
+- **ORM**: Prisma
+- **ML**: Python FastAPI microservice (Prophet + XGBoost)
+- **Storage**: Local filesystem (S3 later)
 
 ### Infrastructure
-- **Container**: Docker + Docker Compose (dev) / Kubernetes (prod)
+- **Container**: Docker Compose
 - **CI/CD**: GitHub Actions
-- **Monitoring**: Prometheus + Grafana + Sentry
-- **CDN**: Cloudflare (static assets + edge functions)
-- **Auth**: OAuth 2.0 + JWT + Magic Links
+- **Monitoring**: Basic Sentry + health checks
 
 ---
 
-## System Architecture
+## Simplified System Architecture
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
 │                         Client Layer                        │
-│  ┌─────────────┐  ┌─────────────┐  ┌─────────────────────┐  │
-│  │   Web App   │  │  PWA (Mobile)│  │   AR Companion App  │  │
-│  │  (Next.js)  │  │  (Capacitor) │  │   (React Native)    │  │
-│  └──────┬──────┘  └──────┬──────┘  └──────────┬──────────┘  │
-│         │                │                     │              │
-│         └────────────────┴─────────────────────┘              │
-│                          │                                   │
-└──────────────────────────┼───────────────────────────────────┘
+│  ┌─────────────────────────────────────────────────────────┐│
+│  │              Next.js Web App + PWA                      ││
+│  └─────────────────────────────────────────────────────────┘│
+└─────────────────────────────────────────────────────────────┘
                            │ HTTPS / WSS
-┌──────────────────────────┼───────────────────────────────────┐
-│                    Edge Layer (Cloudflare)                   │
-│  ┌─────────────────────────────────────────────────────────┐ │
-│  │  CDN  │  DDoS Protection  │  Edge Functions (Auth)     │ │
-│  └─────────────────────────────────────────────────────────┘ │
-└──────────────────────────┼───────────────────────────────────┘
-                           │
-┌──────────────────────────┼───────────────────────────────────┐
+┌─────────────────────────────────────────────────────────────┐
 │                    Application Layer                         │
 │  ┌─────────────┐  ┌─────────────┐  ┌─────────────────────┐  │
 │  │   API GW    │  │  WebSocket  │  │   ML Inference API   │  │
@@ -102,32 +102,14 @@ A comprehensive web-based railway tracking and intelligence platform providing r
 │  └──────┬──────┘  └──────┬──────┘  └──────────┬──────────┘  │
 │         │                │                     │              │
 │         └────────────────┴─────────────────────┘              │
-│                          │                                   │
-└──────────────────────────┼───────────────────────────────────┘
+└─────────────────────────────────────────────────────────────┘
                            │
-┌──────────────────────────┼───────────────────────────────────┐
-│                    Service Layer                             │
-│  ┌─────────────┐  ┌─────────────┐  ┌─────────────────────┐  │
-│  │   Tracking  │  │ Prediction  │  │   Notification      │  │
-│  │   Service   │  │   Service   │  │      Service        │  │
-│  └──────┬──────┘  └──────┬──────┘  └──────────┬──────────┘  │
-│         │                │                     │              │
-│         └────────────────┴─────────────────────┘              │
-│                          │                                   │
-└──────────────────────────┼───────────────────────────────────┘
-                           │
-┌──────────────────────────┼───────────────────────────────────┐
+┌─────────────────────────────────────────────────────────────┐
 │                    Data Layer                                │
 │  ┌─────────────┐  ┌─────────────┐  ┌─────────────────────┐  │
-│  │ PostgreSQL  │  │  TimescaleDB│  │   Redis Cluster     │  │
-│  │  (Primary)  │  │  (TimeSeries)│  │   (Cache/Session)   │  │
-│  └──────┬──────┘  └──────┬──────┘  └──────────┬──────────┘  │
-│         │                │                     │              │
-│         └────────────────┴─────────────────────┘              │
-│                          │                                   │
-│  ┌─────────────────────────────────────────────────────────┐ │
-│  │              S3 Data Lake (Historical Data)             │ │
-│  └─────────────────────────────────────────────────────────┘ │
+│  │ PostgreSQL  │  │  TimescaleDB│  │   Redis             │  │
+│  │  (Primary)  │  │  (TimeSeries)│  │   (Cache)           │  │
+│  └─────────────┘  └─────────────┘  └─────────────────────┘  │
 └─────────────────────────────────────────────────────────────┘
 ```
 
@@ -135,64 +117,25 @@ A comprehensive web-based railway tracking and intelligence platform providing r
 
 ## Data Flow
 
-### Real-Time Tracking Pipeline
+### Real-Time Tracking
 ```
-Railway API / GPS Devices
-         │
-         ▼
-   Ingestion Service (Fastify)
-         │
-         ▼
-   Message Queue (Redis Streams)
-         │
-         ▼
-   Processing Workers (BullMQ)
-   - Data validation
-   - Geospatial indexing
-   - Anomaly detection
-         │
-         ▼
-   TimescaleDB (hypertable)
-         │
-         ▼
-   WebSocket Broadcast → Connected Clients
+Railway API / GPS → Ingestion → Redis Streams → Workers → TimescaleDB → WebSocket → Client
 ```
 
-### Delay Prediction Pipeline
+### Delay Prediction
 ```
-Historical Data (S3)
-         │
-         ▼
-   Feature Engineering (Feast)
-   - Time features (hour, day, festival)
-   - Weather features
-   - Historical delay patterns
-   - Track congestion
-         │
-         ▼
-   ML Model Training (Python)
-   - Prophet (baseline)
-   - XGBoost (feature importance)
-   - LSTM (sequence modeling)
-         │
-         ▼
-   Model Registry (MLflow)
-         │
-         ▼
-   Inference API (FastAPI)
-   - Real-time predictions
-   - Batch predictions (nightly)
-         │
-         ▼
-   Redis Cache (TTL: 5 min)
-         │
-         ▼
-   API Response → Client
+Historical Data → Feature Engineering → ML Model → Redis Cache → API → Client
+```
+
+### Agentic Booking
+```
+User Query → NLP Intent Recognition → Search Trains → Check Availability → 
+Auto-fill Details → Payment Gateway → Ticket Confirmation → Notification
 ```
 
 ---
 
-## Database Schema (Core Tables)
+## Database Schema (Core)
 
 ### Trains
 ```sql
@@ -201,7 +144,7 @@ train_name
 source_station_id (FK)
 destination_station_id (FK)
 railway_zone
-train_type (Express, Mail, Local, Metro)
+train_type
 average_speed
 is_active
 ```
@@ -214,8 +157,6 @@ station_code
 latitude
 longitude
 zone
-has_wifi
-has_food_plaza
 platforms_count
 ```
 
@@ -228,7 +169,7 @@ latitude
 longitude
 speed
 next_station_id (FK)
-delay_minutes (predicted)
+delay_minutes
 last_updated
 ```
 
@@ -241,17 +182,16 @@ scheduled_arrival
 predicted_arrival
 confidence_score
 model_version
-features_json
 created_at
 ```
 
-### User Reports (Crowdsourced)
+### User Reports
 ```sql
 id (PK)
 user_id (FK)
 train_number (FK)
 station_id (FK)
-report_type (delay, cleanliness, safety, food)
+report_type
 description
 photo_url
 upvotes
@@ -259,15 +199,34 @@ verified
 created_at
 ```
 
-### User Preferences
+### Bookings (Agentic System)
+```sql
+id (PK)
+user_id (FK)
+train_number (FK)
+journey_date
+from_station_id (FK)
+to_station_id (FK)
+class (SL, 3A, 2A, 1A)
+passenger_details_json
+pnr_number
+booking_status
+payment_status
+agentic_booking (boolean)
+created_at
+```
+
+### User Profiles
 ```sql
 user_id (PK)
+name
+email
+phone
 home_station_id (FK)
-work_station_id (FK)
-notification_channels (push, email, sms)
-preferred_train_types
-dark_mode
-language
+frequent_stations_json
+preferred_class
+seat_preference (lower, upper, side, etc.)
+notification_channels
 ```
 
 ---
@@ -284,6 +243,13 @@ GET    /api/v1/routes/plan?from=NDLS&to=BCT&date=2024-06-10
 GET    /api/v1/predictions/:train/:station
 POST   /api/v1/reports
 GET    /api/v1/reports?train=12301
+
+# Agentic Booking
+POST   /api/v1/booking/agentic-query
+POST   /api/v1/booking/initiate
+GET    /api/v1/booking/:id/status
+POST   /api/v1/booking/:id/cancel
+GET    /api/v1/booking/waitlist-alerts
 ```
 
 ### WebSocket Events
@@ -293,145 +259,200 @@ client → server:
   - unsubscribe:train
   - subscribe:route (from, to)
   - report:incident
+  - booking:status-update
 
 server → client:
   - train:position_update
   - train:delay_update
-  - station:announcement
   - prediction:updated
+  - booking:confirmed
+  - booking:waitlist-alert
 ```
 
 ---
 
-## ML Model Architecture
+## ML Model Architecture (Simplified)
 
-### Delay Prediction Model Stack
+### Delay Prediction
+1. **Baseline**: Prophet (seasonality + holidays)
+2. **Primary**: XGBoost (weather, historical, time features)
+3. **Ensemble**: Weighted average
 
-1. **Baseline Model**: Prophet (Facebook)
-   - Captures weekly seasonality
-   - Holiday/festival effects
-   - Trend components
-
-2. **Tree-Based Model**: XGBoost
-   - Features: time, weather, historical delays, track section
-   - Handles non-linear relationships
-   - Feature importance for explainability
-
-3. **Sequence Model**: LSTM/Transformer
-   - Input: Last 24h position/delay sequence
-   - Output: Next 6h delay forecast
-   - Attention mechanism for critical stations
-
-4. **Ensemble**: Weighted average with dynamic weights based on:
-   - Model confidence
-   - Data availability
-   - Time of day
-
-### Feature Engineering
-- **Temporal**: Hour, day_of_week, month, is_holiday, is_festival
-- **Weather**: Rainfall, visibility, temperature, wind_speed
-- **Operational**: Track congestion, signal failures, Rake sharing
-- **Historical**: Avg delay last 7 days, same train last week
-- **Real-time**: Current speed, next station delay, platform availability
+### Feature Set
+- Temporal: hour, day, month, holiday
+- Weather: rainfall, visibility, temperature
+- Operational: track congestion, signal failures
+- Historical: avg delay last 7 days
 
 ---
 
-## Security & Privacy
+## Agentic Ticket Booking System
 
-- **Authentication**: OAuth 2.0 (Google, Apple) + Magic Link fallback
-- **Authorization**: Role-based (User, Moderator, Admin)
-- **Data Privacy**: GDPR compliant, user data encrypted at rest
-- **Rate Limiting**: Token bucket per IP/user
-- **Input Validation**: Zod schemas for all inputs
-- **CORS**: Strict origin policy with Cloudflare
+### Architecture
+```
+User Input (Text/Voice)
+         │
+         ▼
+   NLP Intent Parser (LLM-based)
+   - Extract: from, to, date, time, class, passengers
+   - Handle ambiguity: "tomorrow morning" → date + time range
+         │
+         ▼
+   Context Manager
+   - User preferences (home station, frequent routes)
+   - Past bookings (class, seat preference)
+   - Budget constraints
+         │
+         ▼
+   Search & Rank Engine
+   - Trains matching criteria
+   - Sort by: price, duration, availability, delay probability
+   - Apply user preferences
+         │
+         ▼
+   Auto-Fill & Smart Selection
+   - Auto-fill passenger details
+   - Smart seat selection (side lower if available)
+   - Suggest alternatives if waitlisted
+         │
+         ▼
+   Booking Orchestrator
+   - Check seat availability
+   - Initiate payment
+   - Handle waitlist monitoring
+   - Auto-cancel if better option found
+         │
+         ▼
+   Notification System
+   - Confirm booking
+   - Waitlist alerts
+   - Platform changes
+   - Delay updates
+```
+
+### Key Features
+- Natural language booking: "Book me a ticket from Delhi to Mumbai tomorrow in 3AC"
+- Context-aware: remembers frequent routes and preferences
+- Waitlist monitoring with auto-booking when seats available
+- Smart cancellation: auto-cancel if delay > 2 hours and refund available
+- Group booking: coordinate multiple passengers
+- Price tracking: notify when fare drops
+- Alternative suggestions: "Your preferred train is waitlisted, similar train has 12 seats available"
 
 ---
 
-## Scalability Considerations
+## Optional / Planned Features (Post-Launch)
 
-### Horizontal Scaling
-- Stateless API servers (auto-scale based on CPU)
-- Redis Cluster for session/cache
-- Database read replicas for reporting queries
+### Phase 2 (Month 2)
+- [ ] AR Platform Navigation
+- [ ] Travel Buddy Matching
+- [ ] Carbon Footprint Tracker
+- [ ] Predictive Maintenance Alerts
 
-### Performance Targets
-- API Response: < 200ms (p95)
-- WebSocket latency: < 100ms
-- Prediction generation: < 2s
-- Map render: < 500ms with 1000+ trains
+### Phase 3 (Month 3)
+- [ ] Emergency SOS with live location
+- [ ] Coach Occupancy Heatmap (crowdsourced)
+- [ ] Multi-language support (Hindi, Tamil, Telugu, etc.)
+- [ ] Offline-first PWA with full functionality
 
-### Cost Optimization
-- Edge caching for static data (train schedules)
-- Serverless functions for ML inference (pay-per-use)
-- Data archival to cold storage after 90 days
+### Phase 4 (Month 4+)
+- [ ] Metro integration (Delhi, Mumbai, Bangalore, etc.)
+- [ ] Bus/Taxi integration for last-mile
+- [ ] Loyalty points system
+- [ ] Social features (share journey, travel stories)
+- [ ] Advanced analytics dashboard for frequent travelers
+- [ ] Integration with IRCTC API (official)
+- [ ] Group travel planning
+- [ ] Pet-friendly train finder
+- [ ] Luggage tracking (IoT integration)
 
 ---
 
-## Development Phases
+## Development Phases (1-Week Sprint)
 
-### Phase 1: Foundation (Weeks 1-2)
+### Day 1: Foundation
 - [x] Project initialization
 - [ ] Database schema setup
 - [ ] Basic API scaffolding
 - [ ] Map integration (static)
-- [ ] User authentication
+- [ ] User authentication (basic)
 
-### Phase 2: Core Tracking (Weeks 3-4)
+### Day 2: Core Tracking
 - [ ] Real-time WebSocket infrastructure
 - [ ] Train position ingestion
 - [ ] Basic map visualization
 - [ ] Schedule display
 
-### Phase 3: Intelligence (Weeks 5-6)
-- [ ] ML pipeline setup
+### Day 3: Intelligence
+- [ ] ML pipeline setup (simplified)
 - [ ] Delay prediction model (baseline)
 - [ ] Historical data ingestion
 - [ ] Prediction API
 
-### Phase 4: Polish (Weeks 7-8)
+### Day 4: Agentic Booking
+- [ ] NLP intent parser
+- [ ] Booking API
+- [ ] Payment integration (mock)
+- [ ] Booking confirmation flow
+
+### Day 5: Polish
 - [ ] PWA features
 - [ ] Push notifications
 - [ ] Crowdsourced reporting
 - [ ] Performance optimization
 
-### Phase 5: Innovation (Weeks 9-10)
-- [ ] AR navigation
-- [ ] Travel buddy matching
-- [ ] Carbon footprint tracker
-- [ ] Advanced analytics dashboard
+### Day 6: Testing & Bug Fixes
+- [ ] End-to-end testing
+- [ ] Load testing
+- [ ] Bug fixes
+- [ ] Documentation
+
+### Day 7: Launch Prep
+- [ ] Deployment setup
+- [ ] Monitoring
+- [ ] Final testing
+- [ ] Launch! 🚂
 
 ---
 
-## Monitoring & Observability
+## Security & Privacy
 
-- **Metrics**: Prometheus (request latency, error rates, ML prediction accuracy)
-- **Logging**: Structured JSON logs → Loki
-- **Tracing**: OpenTelemetry for distributed tracing
-- **Alerting**: PagerDuty integration for critical failures
-- **Uptime**: UptimeRobot + Cloudflare Analytics
+- OAuth 2.0 + JWT
+- Rate limiting
+- Input validation (Zod)
+- CORS strict policy
+- GDPR compliant
 
 ---
 
-## Contributing Guidelines
+## Scalability (Post-Launch)
 
-1. Fork and clone the repository
-2. Create feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit changes (`git commit -m 'Add amazing feature'`)
-4. Push to branch (`git push origin feature/amazing-feature`)
-5. Open Pull Request
+- Horizontal scaling for API servers
+- Redis Cluster for cache
+- Database read replicas
+- CDN for static assets
+- Serverless ML inference
+
+---
+
+## Contributing
+
+1. Fork and clone
+2. Create feature branch
+3. Commit changes (Conventional Commits)
+4. Push and open PR
 
 ### Code Standards
-- ESLint + Prettier for JavaScript/TypeScript
-- Black + isort for Python
-- Conventional Commits
-- 80%+ test coverage required
+- ESLint + Prettier
+- Black + isort (Python)
+- 80%+ test coverage
 
 ---
 
 ## License
-MIT License - See LICENSE file for details
+MIT License
 
 ---
 
 ## Contact
-Built with ❤️ by Symphonist. For issues and feature requests, use GitHub Issues.
+Built with ❤️ by Symphonist. For issues, use GitHub Issues.
