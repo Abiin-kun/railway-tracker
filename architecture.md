@@ -455,4 +455,4 @@ MIT License
 ---
 
 ## Contact
-Built with ❤️ by Symphonist. For issues, use GitHub Issues.
+Built with ❤️ by Error 404. For issues, use GitHub Issues.
